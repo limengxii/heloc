@@ -3,7 +3,10 @@ import pandas as pd
 import pickle
 import streamlit as st
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
 
 st.title("Home Equity Line of Credit Estimator")
 st.write("Please enter the applicant's details on the sidebar to evaluate the risk of the application.")
@@ -50,8 +53,7 @@ with st.sidebar.form("input_form"):
     num_bank2_natl_trades_w_high_utilization = st.sidebar.number_input("Number of Bank/National Trades with High Credit Utilization", value=1, format="%d")
     percent_trades_w_balance = st.sidebar.number_input("Percentage of Credit Lines with Balance", value=75, format="%d")
 
-     # Submit buttons at the top and bottom of the sidebar
-    submit_button_top = st.form_submit_top("Evaluate")
+    submit_button = st.form_submit_button("Evaluate")
 
 if submit_button:
     input_data = pd.DataFrame([[
@@ -64,29 +66,51 @@ if submit_button:
         net_fraction_revolving_burden, num_revolving_trades_w_balance, num_bank2_natl_trades_w_high_utilization,
         percent_trades_w_balance
     ]], columns=[
-       'ExternalRiskEstimate', 'MSinceOldestTradeOpen', 'MSinceMostRecentTradeOpen',
-        'AverageMInFile', 'NumSatisfactoryTrades', 'NumTrades60Ever2DerogPubRec',
-        'NumTrades90Ever2DerogPubRec', 'PercentTradesNeverDelq', 'MSinceMostRecentDelq',
-        'MaxDelq2PublicRecLast12M', 'MaxDelqEver', 'NumTotalTrades', 'NumTradesOpeninLast12M',
-        'PercentInstallTrades', 'MSinceMostRecentInqexcl7days', 'NumInqLast6M',
-        'NumInqLast6Mexcl7days', 'NetFractionRevolvingBurden', 'NetFractionInstallBurden',
-        'NumRevolvingTradesWBalance', 'NumInstallTradesWBalance',
-        'NumBank2NatlTradesWHighUtilization', 'PercentTradesWBalance''ExternalRiskEstimate', 'MSinceOldestTradeOpen', 'MSinceMostRecentTradeOpen',
-        'AverageMInFile', 'NumSatisfactoryTrades', 'NumTrades60Ever2DerogPubRec',
-        'NumTrades90Ever2DerogPubRec', 'PercentTradesNeverDelq', 'MSinceMostRecentDelq',
-        'MaxDelq2PublicRecLast12M', 'MaxDelqEver', 'NumTotalTrades', 'NumTradesOpeninLast12M',
-        'PercentInstallTrades', 'MSinceMostRecentInqexcl7days', 'NumInqLast6M',
-        'NumInqLast6Mexcl7days', 'NetFractionRevolvingBurden', 'NetFractionInstallBurden',
-        'NumRevolvingTradesWBalance', 'NumInstallTradesWBalance',
-        'NumBank2NatlTradesWHighUtilization', 'PercentTradesWBalance'
+        'External Risk Estimate', 'Months Since Oldest Trade Open', 'Months Since Most Recent Trade Open',
+        'Average Months in File', 'Number of Satisfactory Trades', 'Number of Trades 60+ Ever Derogatory/Public Records',
+        'Number of Trades 90+ Ever Derogatory/Public Records', 'Total Number of Trades', 'Number of Trades Open in Last 12 Months',
+        'Percent of Trades Never Delinquent', 'Months Since Most Recent Delinquency', 'Maximum Delinquency 2 Public Records Last 12 Months',
+        'Maximum Delinquency Ever', 'Percent Installment Trades', 'Net Fraction Installment Burden', 'Number of Installment Trades with Balance',
+        'Months Since Most Recent Inquiry excl. 7 days', 'Number of Inquiries Last 6 Months', 'Number of Inquiries Last 6 Months excl. 7 days',
+        'Net Fraction Revolving Burden', 'Number of Revolving Trades with Balance', 'Number of Bank/National Trades with High Utilization',
+        'Percent of Trades with Balance'
     ])
     
     # Once the model is integrated:
     # prediction = model.predict(input_data)
     # st.write(f"Performance: {'Bad' if prediction[0] == 1 else 'Good'}")
 
+def create_risk_scale(score):
+    # Define the colormap
+    cmap = LinearSegmentedColormap.from_list('risk_scale', ['green', 'red'])
+
+    # Create a 'gradient' matrix for the colormap
+    gradient = np.linspace(1, 0, 256).reshape(1, -1)
+    gradient = np.vstack((gradient, gradient))
+
+    # Create the figure
+    fig, ax = plt.subplots(figsize=(6, 1))
+    ax.imshow(gradient, aspect='auto', cmap=cmap)
+    ax.set_axis_off()
+
+    # Place text at the ends of the bar
+    ax.text(0, -1.5, 'Bad', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
+    ax.text(1, -1.5, 'Good', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
+
+    # Plot the score on the scale
+    ax.axvline(x=score, color='blue', linewidth=4)
+
+    return fig
+
+# Use a placeholder for the user's score
+user_score = 0.5  # Replace with the actual score from your model
+
+# Display the scale and the user's score
+st.pyplot(create_risk_scale(user_score))
+
+
     # For now, show input data (for testing)
-    st.write("Data submitted:")
-    st.write(input_data)
+    #st.write("Data submitted:")
+    #st.write(input_data)
 
 
