@@ -111,7 +111,7 @@ def create_risk_scale(score):
     return fig
 
 # Dummy user score
-user_score = 0.8  # Example score, replace with actual model prediction
+#user_score = 0.8  # Example score, replace with actual model prediction
 
 # Display the risk scale
-st.pyplot(create_risk_scale(user_score))
+st.pyplot(create_risk_scale(prediction))
