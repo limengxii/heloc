@@ -12,7 +12,7 @@ st.title("Home Equity Line of Credit Estimator")
 st.write("Please enter the applicant's details on the sidebar to evaluate the risk of the application.")
 
 # Placeholder for model loading
-# model = pickle.load(open('your_model.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 with st.sidebar.form("input_form"):
     st.sidebar.subheader("Credit History")
@@ -77,8 +77,8 @@ if submit_button:
     ])
     
     # Once the model is integrated:
-    # prediction = model.predict(input_data)
-    # st.write(f"Performance: {'Bad' if prediction[0] == 1 else 'Good'}")
+    prediction = model.predict(input_data)
+    st.write(f"Performance: {'Bad' if prediction[0] == 1 else 'Good'}")
 
 import numpy as np
 import matplotlib.pyplot as plt
