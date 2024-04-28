@@ -80,9 +80,17 @@ if submit_button:
     # prediction = model.predict(input_data)
     # st.write(f"Performance: {'Bad' if prediction[0] == 1 else 'Good'}")
 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+import streamlit as st
+
 def create_risk_scale(score):
     # Define the colormap
     cmap = LinearSegmentedColormap.from_list('risk_scale', ['green', 'red'])
+    
+    # Normalize the score to match the range of the colormap
+    normalized_score = score * 255
 
     # Create a 'gradient' matrix for the colormap
     gradient = np.linspace(1, 0, 256).reshape(1, -1)
@@ -97,20 +105,13 @@ def create_risk_scale(score):
     ax.text(0, -1.5, 'Bad', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
     ax.text(1, -1.5, 'Good', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
 
-    # Plot the score on the scale
-    ax.axvline(x=score, color='blue', linewidth=4)
+    # Plot the score on the scale using normalized_score
+    ax.axvline(x=normalized_score, color='blue', linewidth=4)
 
     return fig
 
-# Use a placeholder for the user's score
-user_score = 0.5  # Replace with the actual score from your model
+# Dummy user score
+user_score = 0.8  # Example score, replace with actual model prediction
 
-# Display the scale and the user's score
+# Display the risk scale
 st.pyplot(create_risk_scale(user_score))
-
-
-    # For now, show input data (for testing)
-    #st.write("Data submitted:")
-    #st.write(input_data)
-
-
