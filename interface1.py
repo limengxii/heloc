@@ -20,7 +20,7 @@ def setup_theme():
 setup_theme()
 
 # Placeholder for model loading
-model = pickle.load(open('modelXGB.pkl', 'rb'))
+model = pickle.load(open('logmodel.pkl', 'rb'))
 
 
 # Human-readable to technical feature name mapping
