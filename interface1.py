@@ -112,15 +112,15 @@ model_features = ['ExternalRiskEstimate', 'MSinceOldestTradeOpen', 'MSinceMostRe
                   'NumInstallTradesWBalance=-8', 'NumBank2NatlTradesWHighUtilization=-8', 'PercentTradesWBalance=-8']
 
 def create_risk_scale(score):
-    cmap = LinearSegmentedColormap.from_list('risk_scale', ['green', 'red'])
+    cmap = LinearSegmentedColormap.from_list('risk_scale', ['red', 'green'])
     normalized_score = score * 255
     gradient = np.linspace(1, 0, 256).reshape(1, -1)
     gradient = np.vstack((gradient, gradient))
     fig, ax = plt.subplots(figsize=(6, 1))
     ax.imshow(gradient, aspect='auto', cmap=cmap)
     ax.set_axis_off()
-    ax.text(0, -.60, 'Bad', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
-    ax.text(1, -.60, 'Good', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
+    ax.text(0, -.60, 'Good', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
+    ax.text(1, -.60, 'Bad', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
     ax.axvline(x=normalized_score, color='blue', linewidth=4)
     return fig
 
@@ -147,6 +147,8 @@ if submit_button:
 # Generate the risk scale plot
     fig = create_risk_scale(probability_of_positive)
     st.pyplot(fig)
-    st.markdown(f"<h2 style='font-size:20px'>The probability of not being default is: <b>{probability_of_positive:.2f}</b></h2>", unsafe_allow_html=True)
+    probability_of_positive_percentage = probability_of_positive * 100
+    st.markdown(f"<h2 style='font-size:20px'>The probability of defaulting is: <b>{probability_of_positive_percentage:.0f}%</b></h2>", unsafe_allow_html=True)
+  
 
 
