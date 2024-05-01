@@ -20,7 +20,8 @@ def setup_theme():
 setup_theme()
 
 # Placeholder for model loading
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('modelXGB.pkl', 'rb'))
+
 
 # Human-readable to technical feature name mapping
 feature_mapping = {
@@ -158,3 +159,6 @@ if submit_button:
 
     user_score = prediction[0]  # Assuming prediction is a number between 0 and 1
     st.pyplot(create_risk_scale(user_score))
+
+
+
