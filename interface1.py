@@ -134,31 +134,19 @@ with st.sidebar:
             max_val = int(row['Rounded Max Value'])
             default_val = int((min_val + max_val) / 2)
 
-            slider_key = f"slider_{feature_name}"
-            num_key = f"num_{feature_name}"
+            input_data[feature_name] = st.slider(human_readable_name, min_value=min_val, max_value=max_val, value=default_val)
 
-            if feature_name in special_conditions:
-                for code, label in special_conditions[feature_name].items():
-                    checkbox_key = f"special_{feature_name}_{code}"
-                    checked = st.checkbox(label, key=checkbox_key)
-                    input_data[f"{feature_name}={code}"] = 1 if checked else 0
-
-            slider_val = st.slider(human_readable_name, min_value=min_val, max_value=max_val, 
-                                   value=st.session_state.get(slider_key, default_val), key=slider_key)
-            number_val = st.number_input("", min_value=min_val, max_value=max_val, 
-                                         value=st.session_state.get(num_key, slider_val), key=num_key)
-
-            input_data[feature_name] = number_val
 
         submit_button = st.form_submit_button("Estimate")
 
 if submit_button:
     input_data_df = pd.DataFrame([input_data])
-    prediction = model.predict(input_data_df)
-    st.write("Prediction:", "Good" if prediction[0] == 1 else "Bad")
+    probabilities = model.predict_proba(input_data_df)
+    probability_of_positive = probabilities[0][1]  
 
-    user_score = prediction[0]  # Assuming prediction is a number between 0 and 1
-    st.pyplot(create_risk_scale(user_score))
+# Generate the risk scale plot
+    fig = create_risk_scale(probability_of_positive)
+    st.pyplot(fig)
 
 
 
