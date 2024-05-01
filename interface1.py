@@ -119,9 +119,9 @@ def create_risk_scale(score):
     fig, ax = plt.subplots(figsize=(6, 1))
     ax.imshow(gradient, aspect='auto', cmap=cmap)
     ax.set_axis_off()
-    ax.text(0, -1.5, 'Bad', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
-    ax.text(1, -1.5, 'Good', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
-    ax.axvline(x=normalized_score, color='yellow', linewidth=4)
+    ax.text(0, -.60, 'Bad', verticalalignment='center', horizontalalignment='left', transform=ax.transAxes, color='black')
+    ax.text(1, -.60, 'Good', verticalalignment='center', horizontalalignment='right', transform=ax.transAxes, color='black')
+    ax.axvline(x=normalized_score, color='blue', linewidth=4)
     return fig
 
 with st.sidebar:
@@ -147,6 +147,6 @@ if submit_button:
 # Generate the risk scale plot
     fig = create_risk_scale(probability_of_positive)
     st.pyplot(fig)
-
+    st.markdown(f"<h2 style='font-size:20px'>The probability of not being default is: <b>{probability_of_positive:.2f}</b></h2>", unsafe_allow_html=True)
 
 
